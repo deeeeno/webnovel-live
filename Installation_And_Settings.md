@@ -1,10 +1,10 @@
-#Installation and Settings
+# Installation and Settings
 
-###Build Requirements
+### Build Requirements
 
 * `node v10.1.0` (recommended)
 
-###Installation
+### Installation
 
     git clone https://github.com/NAVER-CAMPUS-HACKDAY/webnovel-live.git
     cd backend
@@ -12,7 +12,7 @@
     cd ../frontend
     npm install
 
-###Running the app (dev)
+### Running the app (dev)
 
     cd backend
     npm run devstart
