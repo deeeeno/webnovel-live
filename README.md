@@ -23,4 +23,4 @@ Web
 소설 형태의 샘플 문서는 제공해드릴 예정입니다.
 
 ### 프로그램 설치, 세팅 및 실행
-[Installation and Settings](./Installation_And_Settings)
+[Installation and Settings](./Installation_And_Settings.md)
