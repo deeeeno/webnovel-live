@@ -1,39 +1,40 @@
 const Paragraph = require("../models/Paragraph");
 const debug = require("debug")("paragraphController");
-const crypto = require("crypto");
+const hasher = require("../util/hasher");
 
 exports.saveParagraph = (content) => {
   return new Promise((resolve, reject) => {
-    const hasher = crypto.createHash("sha1");
-    hasher.update(content);
-    const hash = hasher.digest("hex");
+    console.log("hi");
+    const hash = hasher.hashSha(content);
+    console.log(hash);
+    console.log("bye");
     const freshParagraph = new Paragraph({
       hash,
       content,
     });
 
-    freshParagraph.save().then((p) => {
-      resolve(p);
+    freshParagraph.save().then((paragraph) => {
+      resolve(paragraph);
     }).catch((err) => {
       debug(err);
       reject(err);
     });
   });
-}
+};
 
 exports.findParagraph = (hash) => {
   return new Promise((resolve, reject) => {
     Paragraph.findOne({
       hash,
-    }).exec().then((p) => {
-      if(p == null) {
+    }).exec().then((paragraph) => {
+      if(paragraph == null) {
         resolve({});
       } else {
-        resolve(p);
+        resolve(paragraph);
       }
     }).catch((reason)=> {
       debug(`error in paragraph find one : ${reason}`);
       reject(reason);
     });
   });
-}
+};
