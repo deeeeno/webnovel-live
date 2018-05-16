@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
+const debug = require("debug")("api");
+
 const paragraphController = require("../controllers/ParagraphController");
 const docSnapshotController = require("../controllers/DocSnapshotController");
-const debug = require("debug")("api");
+const documentController = require("../controllers/DocumentController");
 
 /* GET home page. */
 router.get("/", function(req, res, next) {
@@ -37,8 +39,25 @@ router.get("/docsnapshot/:snapHash", function(req, res, next) {
 });
 
 router.post("/docsnapshot", function(req, res, next) {
-  console.log(req.body.paragraphs);
   docSnapshotController.saveDocSnapshot(req.body.paragraphs).then((paragraph)=> {
+    res.json(paragraph);
+  }).catch((err) => {
+    //need error handling
+    debug(`error in GET ${req.originalUrl}`);
+  });
+});
+
+router.get("/document/name/:dName", function(req, res, next) {
+  documentController.findDocumentWithName(req.params.dName).then((snapshot, err)=> {
+    res.json(snapshot);
+  }).catch((err) => {
+    //need error handling
+    debug(`error in GET ${req.originalUrl}`);
+  });
+});
+
+router.post("/document", function(req, res, next) {
+  documentController.createDocument(req.body.name).then((paragraph)=> {
     res.json(paragraph);
   }).catch((err) => {
     //need error handling
