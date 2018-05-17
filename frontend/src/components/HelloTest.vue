@@ -1,8 +1,7 @@
 <template>
     <div class="test">
       <div v-for="paragraph in overall" :key="paragraph.index">
-        <div v-if="isLock === true" v-bind:id='paragraph.index' @click="IamUsing" @keyup="editEnd" v-model="paragraph.content"></div>
-        <textarea v-if="isLock === false" v-bind:id='paragraph.index' @click="IamUsing" @keyup="editEnd" v-model="paragraph.content"></textarea>
+        <textarea v-bind:id='paragraph.index' @click="IamUsing" @keyup="editEnd" v-model="paragraph.content"></textarea>
         <button v-bind:id='paragraph.index' @click="editEnd">exit</button>
       </div>
 
