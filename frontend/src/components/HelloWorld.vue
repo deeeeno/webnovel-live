@@ -1,56 +1,34 @@
 <template>
   <div class="hello">
-    <button v-on:click="increment">inc</button>
-    <h1>{{ serverMessage }}</h1>
+    <button v-on:click="increment">inc</button> <!--inc 버튼 누르면 increment method 발동 -->
+    <!--inc버튼이 눌리면 increment handler가 발생-->
+    <!--그 안에서 다시 store로 들어가서 commit, dispatch 발생 -->
+    <h1>{{ serverMessage }}</h1> <!-- serverMsg, count getter call -->
     <h1>{{ count }}</h1>
-    <p>
-      For guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://github.com/vuejs/vue-cli/tree/dev/docs" target="_blank">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank">eslint</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-unit-mocha" target="_blank">unit-mocha</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-e2e-cypress" target="_blank">e2e-cypress</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank">Twitter</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org/en/essentials/getting-started.html" target="_blank">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org/en/intro.html" target="_blank">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org/en" target="_blank">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a></li>
-    </ul>
   </div>
 </template>
 
 <script>
+///Vue 객체 생성 - default로 이 페이지에서 그냥 사용 가능.
 export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
+  name: 'HelloWorld', //객체의 이름은 HelloWorld
+  props: { // props : 부모 컴포넌트의 데이터를 받을 수 있게 노출된 속성의 리스트/해시
+    msg: String //msg를 String으로 선언.
   },
   computed: {
-    count() {
+    count() { //count getter
       return this.$store.state.count
     },
-    serverMessage() {
+    serverMessage() { //serverMsg getter
       return this.$store.state.serverMessage
     }
   },
   methods:{
-    increment () {
-      this.$store.commit('increment');
-      this.$store.dispatch('sendMessage');
+    increment () { // event handler라고 생각해도 되는 개념
+        this.$store.commit('increment'); //store라는 Vuex module에 'increment'로 commit(동기적인 action)
+        this.$store.dispatch('sendMessage'); //store Vuex module에서 'sendMessage' handler로부터 온것을 받음(비동기적인 action)
+        //why?? counter는 모든 client내에서 변경되야하지만
+        //      server에서 보낸 메세지는 버튼을 누른 client에게만 허용되야 하기 때문에!
     }
   },
 }

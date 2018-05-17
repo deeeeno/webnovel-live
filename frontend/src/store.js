@@ -2,35 +2,76 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import io from "socket.io-client";
 import createSocketPlugin from './socketplugin';
-
 Vue.use(Vuex)
 
-const socket = io("http://localhost:3000")
+const socket = io("http://localhost:3000") // for server communication
+const plugin = createSocketPlugin(socket); // same as
 
-
-const plugin = createSocketPlugin(socket);
-
+//저장소 생성 & 외부에서 사용가능하도록.
 export default new Vuex.Store({
   state: {
-    count: 0,
-    serverMessage: "Nothing yet",
+    //내가 사용할 정보에 대한 state
+    overall: [{
+        index: "1",
+        content: "a",
+        lock: false
+      },
+      {
+        index: "2",
+        content: "b",
+        lock: false
+      },
+      {
+        index: "3",
+        content: "c",
+        lock: false
+      },
+      {
+        index: "4",
+        content: "d",
+        lock: false
+      }
+    ] // id, context, lock
   },
+  ///getters
+  getters: {
+    getOverall: function(state) {
+      return state.overall;
+    }
+  },
+  //setters sync
   mutations: {
-    increment (state) {
-      state.count++
+    nowUsing: function (state, payload) { //for set using variable
+      var index = state.overall.findIndex(obj => obj.index==payload.target);
+      state.overall[index].lock = true;
+      socket.emit("sendLock", { target : payload.target });
     },
-    serverMessageChange (state, msg) {
-      state.serverMessage = msg
+    editDone: function (state, payload) {
+      var index = state.overall.findIndex(obj => obj.index==payload.target);
+      state.overall[index].lock = false;
+      socket.emit("sendContent", { target : payload.target, content: state.overall[index].content });
     },
-    countChange (state, x) {
-      state.count = x;
+    setNewStory: function(state, payload){
+      console.log("get target : ", payload.target);
+      console.log("get content : ", payload.content);
+      var index = state.overall.findIndex(obj => obj.index==payload.target);
+      state.overall[index].content = payload.content;
+    },
+    setNewLock: function(state, payload){
+      var index = state.overall.findIndex(obj => obj.index==payload.target);
+      state.overall[index].lock = true;
     }
   },
-  actions: {
-    //need some more knowledge
-    sendMessage (context) {
-      socket.emit("hello", { greetings: "hello", count: this.state.count });
+  //setters asyns
+  /*actions: {
+    setNewStory: function(state, payload){
+      var index = state.overall.findIndex(obj => obj.index==payload.target);
+      state.storyList[index] = payload.content;
+    },
+    setNewLock: function(state, payload){
+      var index = state.overall.findIndex(obj => obj.index==payload.target);
+      state.storyList[index] = true;
     }
-  },
+  },*/
   plugins: [plugin],
 })

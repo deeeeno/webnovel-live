@@ -1,9 +1,16 @@
+//server와 통신이 되는 역할을 하는 javascript
+//Plugin형태로 import해서 사용
 export default function createSocketPlugin (socket) {
   return store => {
-    socket.on("serverHello", (data) => {
-      console.log(data);
-      store.commit("serverMessageChange", data.msg);
-      store.commit("countChange", data.count);
-    });
-  }
+
+  socket.on("plzSetContent", (data) => {
+    console.log("target : " + data.target);
+    console.log("story  : " + data.content);
+    store.commit("setNewStory", { target : data.target, content : data.content });
+  });
+  socket.on("plzSetLock", (data) => {
+    console.log("target to lock : " + data.targetLock);
+    store.commit("setNewLock", { target : data.targetLock });
+  });
+}
 }
