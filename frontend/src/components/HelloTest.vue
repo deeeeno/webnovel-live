@@ -1,7 +1,7 @@
 <template>
     <div class="test">
       <div v-for="paragraph in overall" :key="paragraph.id">
-        <textarea @click="IamUsing(paragraph.id)" v-model="paragraph.content"></textarea>
+        <textarea @click="IamUsing(paragraph.id)" v-model="paragraph.content" :disabled="paragraph.lock"></textarea>
         <button @click="editEnd(paragraph.id)">exit</button>
         <button @click="addParagraph(paragraph.id)">+</button>
       </div>
@@ -11,17 +11,17 @@
 <script>
 export default {
   name: 'Document',
-  data: {
-    owner: null
+  data: function() {
+    return {
+      owner: null
+    }
+  },
+  created() {
+    this.owner = this.makeOwner();
   },
   computed: { //get variables
     overall() {
       return this.$store.getters.getOverall;
-    },
-    created() {
-      const socket = io("http://localhost:3000");
-      const plugin = createSocketPlugin(socket);
-      this.owner = this.makeOwner();
     }
   },
   methods: {
