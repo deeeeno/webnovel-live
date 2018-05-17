@@ -1,33 +1,47 @@
 <template>
     <div class="test">
-      <div v-for="paragraph in overall" :key="paragraph.index">
-        <textarea v-bind:id='paragraph.index' @click="IamUsing" @keyup="editEnd" v-model="paragraph.content"></textarea>
-        <button v-bind:id='paragraph.index' @click="editEnd">exit</button>
+      <div v-for="paragraph in overall" :key="paragraph.id">
+        <textarea @click="IamUsing(paragraph.id)" v-model="paragraph.content"></textarea>
+        <button @click="editEnd(paragraph.id)">exit</button>
+        <button @click="addParagraph(paragraph.id)">+</button>
       </div>
-
     </div>
 </template>
 
 <script>
 export default {
   name: 'Document',
+  data: {
+    owner: null
+  },
   computed: { //get variables
     overall() {
       return this.$store.getters.getOverall;
+    },
+    created() {
+      const socket = io("http://localhost:3000");
+      const plugin = createSocketPlugin(socket);
+      this.owner = this.makeOwner();
     }
   },
   methods: {
-    IamUsing: function(event){
-      var Target = event.currentTarget.id;
-      this.$store.commit('nowUsing', { target : Target });
+    IamUsing: function(index, event){
+      this.$store.commit('nowUsing', { id : index, owner : this.owner });
     },
-    editEnd: function(event){
-      var Target = event.currentTarget.id;
-      this.$store.commit('editDone', { target : Target });
+    editEnd: function(index, event){
+      this.$store.commit('editDone', { id : index });
     },
-    editStory: function(event){
-      var target = event.currentTarget.story;
-      this.$store.commit('editStory',target);
+    addParagraph: function(index, event){
+      this.$store.commit('addParagraph', { id : index });
+    },
+    makeOwner: function(){
+      let text = '';
+      let letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      for(let i=0; i<6; i++)
+      {
+        text += letters.charAt(Math.floor(Math.random() * letters.length));
+      }
+      return text;
     }
   },
 }
@@ -35,10 +49,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-div {
-  width: 1000px;
-  height: 100px;
-}
 textarea {
   width: 1000px;
   height: 100px;
