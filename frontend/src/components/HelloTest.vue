@@ -1,7 +1,7 @@
 <template>
     <div class="test">
       <div v-for="paragraph in overall" :key="paragraph.id">
-        <textarea @click="IamUsing(paragraph.id)" v-model="paragraph.content" :disabled="paragraph.lock"></textarea>
+        <textarea @keyup="IamUsing(paragraph)" v-model="paragraph.content" :disabled="paragraph.lock"></textarea>
         <button @click="editEnd(paragraph.id)">exit</button>
         <button @click="addParagraph(paragraph.id)">+</button>
       </div>
@@ -25,8 +25,8 @@ export default {
     }
   },
   methods: {
-    IamUsing: function(index, event){
-      this.$store.commit('nowUsing', { id : index, owner : this.owner });
+    IamUsing: function(paragraph, event){
+      if(!paragraph.lock) this.$store.commit('nowUsing', { id : paragraph.id, owner : this.owner });
     },
     editEnd: function(index, event){
       this.$store.commit('editDone', { id : index });
