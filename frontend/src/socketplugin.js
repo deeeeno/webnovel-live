@@ -2,10 +2,15 @@
 //Plugin형태로 import해서 사용
 export default function createSocketPlugin (socket) {
   return store => {
-    socket.on("serverHello", (data) => { // serverHello가 오면 store의 data들을 최신화 해줘
-      console.log(data);
-      store.commit("serverMessageChange", data.msg);
-      store.commit("countChange", data.count);
-    });
-  }
+
+  socket.on("plzSetContent", (data) => {
+    console.log("target : " + data.target);
+    console.log("story  : " + data.content);
+    store.commit("setNewStory", { target : data.target, content : data.content });
+  });
+  socket.on("plzSetLock", (data) => {
+    console.log("target to lock : " + data.targetLock);
+    store.commit("setNewLock", { target : data.targetLock });
+  });
+}
 }
