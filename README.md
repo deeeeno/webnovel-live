@@ -13,7 +13,7 @@
 편집 이력의 조회가 가능해야 합니다
 다수의 사용자가 동시접속하는 환경에 대한 테스트가 이루어지면 좋을 것 같습니다.
 
-### 개발언어 
+### 개발언어
 자유 선택 (Java 선호)
 
 ### 플랫폼
@@ -24,3 +24,5 @@ Web
 
 ### 프로그램 설치, 세팅 및 실행
 [Installation and Settings](./Installation_And_Settings.md)
+### 주요 코드 및 components
+[Essential Code and Components](./Essential Code and Components.md)
