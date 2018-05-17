@@ -2,6 +2,8 @@ module.exports = function (socket) {
 
   const paragraphs = new Map([]);
 
+  setInterval(checkLockInterval, 1500);
+
   socket.on("paragraphAdd", (nextParaIndex) => {
     //create paragraph with calculated Index with claculateIndex(nextParaIndex)
     
@@ -59,4 +61,30 @@ module.exports = function (socket) {
     
     return newIndex;
   }
+
+
+  const MAX_LOCK_TIME = 20000;
+  function checkLockInterval(paragraphs) {
+
+    console.log("check lock");
+    const currentTime = Date.now();
+    paragraphs.forEach((value, key, map) => {
+      if(value.lock == true) {
+        if(value.lockTime - currentTime > MAX_LOCK_TIME) {
+          const temp = value;
+          temp.lock = false;
+          temp.lockTime = null;
+          paragraphs.set(key, temp);
+        }
+      }      
+    });
+  
+  }
+  
+  function updateLock(index) {
+    let paragraphObject = paragraphs.get(index);
+    paragraphObject.lockTime = Date.now();
+    paragraphs.set(index, paragraphObject);
+  }
 };
+
