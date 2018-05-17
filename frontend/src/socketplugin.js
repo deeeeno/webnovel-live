@@ -12,5 +12,9 @@ export default function createSocketPlugin (socket) {
     console.log("target to lock : " + data.targetLock);
     store.commit("setNewLock", { target : data.targetLock });
   });
+  socket.on("plzSetNewPara",(data) =>{
+    console.log("new id : " +data);
+    store.commit("setNewPara", data);
+  });
 }
 }
