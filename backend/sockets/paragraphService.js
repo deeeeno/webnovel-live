@@ -22,22 +22,6 @@ module.exports = function (socket) {
 
   setInterval(checkLockInterval, 5000);
 
-  socket.on("paragraphAdd", (nextParaIndex) => {
-    //create paragraph with calculated Index with claculateIndex(nextParaIndex)
-
-    let index = calculateIndex(nextParaIndex);
-    let data = {
-      content: '',
-      lock: false,
-      owner: 'defaultUser'
-    };
-
-    paragraphs.set(index, data);
-
-    console.log(paragraphs);
-    // socket.emit
-  });
-
   socket.on("paragraphUpdate", (data) => {
 
     //data.index;
@@ -70,22 +54,63 @@ module.exports = function (socket) {
     console.log(data.id + " is using");
     socket.broadcast.emit("plzSetLock", { targetLock : data.id });
   });
-
   socket.on("sendContent",(data) =>{
     console.log("target number : " + data.id);
     console.log("content : " + data.content);
     socket.broadcast.emit("plzSetContent", { target : data.id, content: data.content });
   });
-  function findPrevParaIndex(nextParaIndex) {
-    let prevIndex = MIN_INDEX;
-    paragraphs.forEach(function (value, key, map) {
-      let temp = key;
-      if (temp < nextParaIndex && temp > prevIndex) {
-        prevIndex = temp;
-      }
-    });
 
-    return prevIndex;
+  socket.on("paragraphAdd", (nextParaIndex) => {
+    var index = calculateIndex(nextParaIndex);
+    var data = {
+      content: 'add example',
+      lock: false,
+      owner: ''
+    };
+    paragraphs.set(index, data);
+    socket.emit("plzSetNewPara",index);
+    socket.broadcast.emit("plzSetNewPara",index);
+  });
+  function findPrevParaIndex(nextParaIndex) {
+    let index = MIN_INDEX;
+    if (nextParaIndex === null) {
+      if (paragraphs.length === 0) {  // Document에 아무 paragraph도 없을 때
+        return 0;
+      } else {  // 맨 마지막 paragraph 뒤에 새로운 paragraph 추가할 때
+        paragraphs.forEach(function (value, key, map) {
+          let temp = key;
+          if (temp > index) {
+            index = temp
+          }
+        });
+
+        return index;
+      }
+    } else {  // 두 paragraph 사이에 새로운 paragraph 추가할 때
+      paragraphs.forEach(function (value, key, map) {
+        let temp = key;
+        if (temp < nextParaIndex && temp > index) {
+          index = temp;
+        }
+      });
+
+      return index;
+    }
+  }
+
+  function calculateIndex(nextParaIndex) {
+    let newIndex;
+    let prevIndex = findPrevParaIndex(nextParaIndex);
+    console.log("previous ID : " + prevIndex);
+    if (prevIndex === 0) {
+      newIndex = prevIndex;
+    } else if (nextParaIndex === null) {
+      newIndex = prevIndex + 1;
+    } else {
+      newIndex = (prevIndex + nextParaIndex) / 2;
+    }
+
+    return newIndex;
   }
 
   function canEdit(targetPara, user) {
@@ -99,22 +124,6 @@ module.exports = function (socket) {
       return true;
     }
   }
-
-  function calculateIndex(nextParaIndex) {
-    let newIndex;
-    let prevIndex = findPrevParaIndex(nextParaIndex);
-
-    if (prevIndex === MIN_INDEX) {
-      newIndex = nextParaIndex - 1;
-    } else if (!nextParaIndex) {
-      newIndex = prevIndex + 1;
-    } else {
-      newIndex = prevIndex + ((nextParaIndex - prevIndex) / 2);
-    }
-
-    return newIndex;
-  }
-
 
   const MAX_LOCK_TIME = 50000;
 
