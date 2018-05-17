@@ -4,6 +4,9 @@ import io from "socket.io-client";
 import createSocketPlugin from './socketplugin';
 Vue.use(Vuex)
 
+const socket = io("http://localhost:3000");
+const plugin = createSocketPlugin(socket);
+
 //저장소 생성 & 외부에서 사용가능하도록.
 export default new Vuex.Store({
   state: {
