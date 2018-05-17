@@ -4,13 +4,13 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-
+const cors = require('cors');
 const indexRouter = require('../routes/index');
 const usersRouter = require('../routes/users');
 const apiRouter = require('../routes/api')
 
 module.exports = function (app) {
-
+    app.use(cors());
     // view engine setup
     app.set('views', path.join(__dirname, '../views'));
     app.set('view engine', 'pug');

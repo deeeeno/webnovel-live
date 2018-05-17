@@ -32,3 +32,19 @@ exports.findDocumentWithName = (name) => {
     });
   });
 };
+
+exports.findAllDocuments = () => {
+  return new Promise((resolve, reject) => {
+    Document.find({
+    }).exec().then((documents) => {
+      if(documents == null) {
+        resolve({});
+      } else {
+        resolve(documents);
+      }
+    }).catch((reason)=> {
+      debug(`error in docsnapshot find one : ${reason}`);
+      reject(reason);
+    });
+  });
+}
