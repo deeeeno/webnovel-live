@@ -10,7 +10,6 @@ module.exports = function (server) {
   io.on("connection", function (socket) {
 
     debug("got a connection");
-    require('../sockets/hello')(socket);
     require('../sockets/paragraphService')(socket);
     //console.log(socket);
 
