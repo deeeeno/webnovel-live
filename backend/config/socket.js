@@ -1,4 +1,4 @@
-const debug = require("debug")("socket");
+const debug = require("debug")("socketConfig");
 
 module.exports = function (server) {
   let io = require("socket.io")(server, { origins: "http://localhost:8080"});
@@ -9,8 +9,9 @@ module.exports = function (server) {
 
   io.on("connection", function (socket) {
 
-    console.log("got a connection");
+    debug("got a connection");
     require('../sockets/hello')(socket);
+    require('../sockets/paragraphService')(socket);
     //console.log(socket);
 
   });
