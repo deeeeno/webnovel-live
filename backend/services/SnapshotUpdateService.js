@@ -17,7 +17,6 @@ exports.createSnapshot = (docName, currentParagraphs) => {
             reject("big problem. wrong hash inside document");
           } else {
             //continue here
-            
           }
         }).catch((reason) => {
           reject(reason);

@@ -6,6 +6,7 @@ const ParagraphSchema = new Schema({
   hash: String,
   index: Number,
   content: String,
+  owner: String,
 }, { timestamps: true });
 // timestamps add createdAt and updatedAt
 

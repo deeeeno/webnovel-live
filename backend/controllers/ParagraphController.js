@@ -2,13 +2,14 @@ const Paragraph = require("../models/Paragraph");
 const debug = require("debug")("paragraphController");
 const hasher = require("../util/hasher");
 
-exports.saveParagraph = (index, content) => {
+exports.saveParagraph = (index, content, owner) => {
   return new Promise((resolve, reject) => {
     const hash = hasher.hashSha(content);
     const freshParagraph = new Paragraph({
       hash,
       index,
       content,
+      owner,
     });
 
     freshParagraph.save().then((paragraph) => {

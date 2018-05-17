@@ -21,7 +21,7 @@ router.get("/paragraph/:pHash", function(req, res, next) {
 });
 
 router.post("/paragraph", function(req, res, next) {
-  paragraphController.saveParagraph(req.body.content).then((paragraph)=> {
+  paragraphController.saveParagraph(req.body.index, req.body.content, req.body.owner).then((paragraph)=> {
     res.json(paragraph);
   }).catch((err) => {
     //need error handling
