@@ -1,14 +1,28 @@
 module.exports = function (socket) {
 
-  socket.on("paragraphUpdate", (data) => {
-    //socket.emit("serverHello", {
-    //  msg:`Hi this is server + ${new Date()}`,
-    //  count: data.count,
-    //});
-    //socket.broadcast.emit("serverHello", {
-    //  msg:`Hi this is server + ${new Date()}`,
-    //  count: data.count,
-    //});
+  const paragraphs = [];
+
+  socket.on("paragraphAdd", (data) => {
+    //create paragraph with calculated Index with claculateIndex(nextParaIndex)
   });
+
+  socket.on("paragraphUpdate", (data) => {
+
+    //data.index;
+    //data.content;
+
+
+  });
+
+  socket.on("paragraphDelete", (data) => {
+
+    //data.index;
+
+  });
+
+  function calculateIndex(nextParaIndex) {
+    let newIndex;
+    return newIndex;
+  }
 
 }

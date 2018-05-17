@@ -1,7 +1,7 @@
 const debug = require("debug")("socketConfig");
 
 module.exports = function (server) {
-  let io = require("socket.io")(server, { origins: "http://localhost:8080"});
+  let io = require("socket.io")(server, { origins: "*:*"});
   
   //server.listen should be after socket io startup. (was moved from ./bin/www)
   //this port should be the port in ./bin/www (potential bug)
