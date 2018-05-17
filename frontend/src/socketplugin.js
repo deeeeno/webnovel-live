@@ -16,5 +16,14 @@ export default function createSocketPlugin (socket) {
     console.log("new id : " +data);
     store.commit("setNewPara", data);
   });
+  socket.on("intialDocument",(data) => {
+    store.commit("createIntialParagraphs", data);
+  })
+
+  socket.on("lockParagraph",(id) => {
+    console.log(id);
+    store.commit("setNewLock", id);
+  })
+  
 }
 }

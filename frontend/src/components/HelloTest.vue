@@ -1,7 +1,10 @@
 <template>
     <div class="test">
+      <div>{{overall}}</div>
       <div v-for="paragraph in overall" :key="paragraph.id">
-        <textarea @keyup="IamUsing(paragraph)" v-model="paragraph.content" :disabled="paragraph.lock"></textarea>
+        <div v-if="paragraph.lock">{{paragraph.content}}</div>
+        <textarea v-else @keyup="IamUsing(paragraph)" v-model="paragraph.content"></textarea>
+        <!--<textarea @keyup="IamUsing(paragraph)" v-model="paragraph.content" :disabled="paragraph.lock"></textarea>-->
         <button @click="editEnd(paragraph.id)">exit</button>
         <button @click="addParagraph(paragraph.id)">+</button>
       </div>
@@ -18,6 +21,7 @@ export default {
   },
   created() {
     this.owner = this.makeOwner();
+    this.$store.commit("initDocument");
   },
   computed: { //get variables
     overall() {

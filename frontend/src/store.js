@@ -11,25 +11,7 @@ const plugin = createSocketPlugin(socket);
 export default new Vuex.Store({
   state: {
     //내가 사용할 정보에 대한 state
-    overall: [{
-        id: 1,
-        content: "a",
-        lock: false,
-        owner: ''
-      },
-      {
-        id: 2,
-        content: "b",
-        lock: false,
-        owner: ''
-      },
-      {
-        id: 3,
-        content: "c",
-        lock: false,
-        owner: ''
-      }
-    ] // id, context, lock
+    overall: [] // id, context, lock
   },
   ///getters
   getters: {
@@ -39,17 +21,37 @@ export default new Vuex.Store({
   },
   //setters sync
   mutations: {
+    updateOverall: function(state) {
+      state.overall.sort((a, b)=>{
+        if (a.id < b.id) {
+          return -1;
+        }
+        if (a.id > b.id) {
+          return 1;
+        }
+        // a must be equal to b
+        return 0;
+      });
+    },
+
+    initDocument: function(state) {
+      socket.emit("initDocument");
+    },
+    createIntialParagraphs: function(state, data) {
+      state.overall = data;
+      this.commit("updateOverall");
+    },
     //index는 버튼 눌렀을 떄 그 아이디에 대한 위치
     nowUsing: function (state, payload) { //for set using variable
       var index = state.overall.findIndex(obj => obj.id==payload.id);
-      state.overall[index].lock = true;
+      //state.overall[index].lock = true;
       state.overall[index].owner = payload.owner;
-      socket.emit("sendLock", { id : payload.id });
+      socket.emit("paragraphUpdate", { id : payload.id, content: state.overall[index].content, owner: state.overall[index].owner });
     },
     editDone: function (state, payload) {
       var index = state.overall.findIndex(obj => obj.id==payload.id);
       state.overall[index].lock = false;
-      socket.emit("sendContent", { id : payload.id, content: state.overall[index].content });
+      socket.emit("paragraphUpdate", { id : payload.id, content: state.overall[index].content, owner: state.overall[index].owner });
     },
     addParagraph: function(state, payload) {
       var Index = state.overall.findIndex(obj => obj.id==payload.id);
@@ -65,7 +67,7 @@ export default new Vuex.Store({
       state.overall[index].content = payload.content;
     },
     setNewLock: function(state, payload){
-      var index = state.overall.findIndex(obj => obj.index==payload.target);
+      var index = state.overall.findIndex(obj => obj.id==payload);
       state.overall[index].lock = true;
     },
     setNewPara: function(state, payload){

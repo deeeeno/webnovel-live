@@ -1,38 +1,32 @@
-module.exports = function (socket) {
+module.exports = function (socket, paragraphs) {
 
-  const paragraphs = new Map([
-    [0, {
-      content: 'Hello World!',
-      lock: false,
-      owner: ''
-    }],
-    [1, {
-      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      lock: false,
-      owner: ''
-    }],
-    [2, {
-      content: 'Nam dui velit, tempor a magna vitae, vulputate aliquam lacus.',
-      lock: false,
-      owner: ''
-    }]
-  ]);
+  
 
   const MIN_INDEX = -99999;
 
-  setInterval(checkLockInterval, 5000);
+
+  socket.on("initDocument", () => {
+    let temp = [];
+    console.log(paragraphs);
+    paragraphs.forEach(function(value, key, map) {
+      let p = value;
+      p.id = key;
+      temp.push(p);
+    })
+    socket.emit("intialDocument", temp);
+  });
 
   socket.on("paragraphUpdate", (data) => {
 
     //data.index;
     //data.content;
-    let targetPara = paragraphs.get(data.index);
-  
+    let targetPara = paragraphs.get(data.id);
+    console.log(`targetParagraph : ${targetPara}`);
     if(canEdit(targetPara, data.owner)) {
       console.log("updatedParagraph");
       targetPara.content = data.content;
-      updateLock(data.index, data.owner);
-      paragraphs.set(data.index, targetPara);
+      updateLock(data.id, data.owner);
+      paragraphs.set(data.id, targetPara);
     }
     console.log(paragraphs);
 
@@ -52,6 +46,7 @@ module.exports = function (socket) {
 
   socket.on("sendLock",(data) =>{
     console.log(data.id + " is using");
+    
     socket.broadcast.emit("plzSetLock", { targetLock : data.id });
   });
   socket.on("sendContent",(data) =>{
@@ -61,13 +56,16 @@ module.exports = function (socket) {
   });
 
   socket.on("paragraphAdd", (nextParaIndex) => {
+    console.log(nextParaIndex);
     var index = calculateIndex(nextParaIndex);
     var data = {
       content: 'add example',
       lock: false,
       owner: ''
     };
+    //console.log(index);
     paragraphs.set(index, data);
+    console.log(paragraphs);
     socket.emit("plzSetNewPara",index);
     socket.broadcast.emit("plzSetNewPara",index);
   });
@@ -108,6 +106,7 @@ module.exports = function (socket) {
       newIndex = prevIndex + 1;
     } else {
       newIndex = (prevIndex + nextParaIndex) / 2;
+      console.log(`i am in division ${newIndex}`);
     }
 
     return newIndex;
@@ -127,31 +126,14 @@ module.exports = function (socket) {
 
   const MAX_LOCK_TIME = 50000;
 
-  function checkLockInterval() {
-
-    //console.log("check lock");
-    let currentTime = Date.now();
-    paragraphs.forEach((value, key, map) => {
-      if (value.lock == true) {
-        if (currentTime - value.lockTime > MAX_LOCK_TIME) {
-          const temp = value;
-          temp.lock = false;
-          temp.lockTime = null;
-          paragraphs.set(key, temp);
-          console.log(`release lock of : ${key} |||| ${value.lockTime} ||||| ${currentTime}`);
-        } else {
-          console.log(`still got lock of : ${key} |||| ${value.lockTime} ||||| ${currentTime}`)
-        }
-      }
-    });
-
-  }
+  
 
   function updateLock(index, owner) {
     let targetPara = paragraphs.get(index);
     targetPara.owner = owner;
     targetPara.lock = true;
     targetPara.lockTime = Date.now();
+    socket.broadcast.emit("lockParagraph", index);
     paragraphs.set(index, targetPara);
   }
 };
