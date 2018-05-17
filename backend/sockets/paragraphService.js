@@ -17,23 +17,23 @@ module.exports = function (socket) {
       owner: ''
     }]
   ]);
-  
+
   const MIN_INDEX = -99999;
 
-  setInterval(checkLockInterval, 1500);
+  setInterval(checkLockInterval, 5000);
 
   socket.on("paragraphAdd", (nextParaIndex) => {
     //create paragraph with calculated Index with claculateIndex(nextParaIndex)
-    
+
     let index = calculateIndex(nextParaIndex);
     let data = {
       content: '',
       lock: false,
       owner: 'defaultUser'
     };
-    
+
     paragraphs.set(index, data);
-    
+
     console.log(paragraphs);
     // socket.emit
   });
@@ -42,21 +42,30 @@ module.exports = function (socket) {
 
     //data.index;
     //data.content;
-    
-    paragraphs.set(data.index, data.content);
+    let targetPara = paragraphs.get(data.index);
+  
+    if(canEdit(targetPara, data.owner)) {
+      console.log("updatedParagraph");
+      targetPara.content = data.content;
+      updateLock(data.index, data.owner);
+      paragraphs.set(data.index, targetPara);
+    }
     console.log(paragraphs);
-    
+
     // socket.emit
   });
 
-  socket.on("paragraphDelete", (index) => {
+  socket.on("paragraphDelete", (data) => {
 
     //data.index;
-    paragraphs.delete(index);
+    let targetPara = paragraphs.get(data.index);
+    if(canEdit(targetPara, data.owner)) {
+      paragraphs.delete(data.index);
+    }
     console.log(paragraphs);
-    
+
   });
-  
+
   function findPrevParaIndex(nextParaIndex) {
     let prevIndex = MIN_INDEX;
     paragraphs.forEach(function (value, key, map) {
@@ -65,14 +74,26 @@ module.exports = function (socket) {
         prevIndex = temp;
       }
     });
-    
+
     return prevIndex;
   }
-  
+
+  function canEdit(targetPara, user) {
+    if (targetPara.lock == true) {
+      if (targetPara.owner == user) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return true;
+    }
+  }
+
   function calculateIndex(nextParaIndex) {
     let newIndex;
     let prevIndex = findPrevParaIndex(nextParaIndex);
-    
+
     if (prevIndex === MIN_INDEX) {
       newIndex = nextParaIndex - 1;
     } else if (!nextParaIndex) {
@@ -80,33 +101,38 @@ module.exports = function (socket) {
     } else {
       newIndex = prevIndex + ((nextParaIndex - prevIndex) / 2);
     }
-    
+
     return newIndex;
   }
 
 
-  const MAX_LOCK_TIME = 20000;
-  function checkLockInterval(paragraphs) {
+  const MAX_LOCK_TIME = 50000;
 
-    console.log("check lock");
-    const currentTime = Date.now();
+  function checkLockInterval() {
+
+    //console.log("check lock");
+    let currentTime = Date.now();
     paragraphs.forEach((value, key, map) => {
-      if(value.lock == true) {
-        if(value.lockTime - currentTime > MAX_LOCK_TIME) {
+      if (value.lock == true) {
+        if (currentTime - value.lockTime > MAX_LOCK_TIME) {
           const temp = value;
           temp.lock = false;
           temp.lockTime = null;
           paragraphs.set(key, temp);
+          console.log(`release lock of : ${key} |||| ${value.lockTime} ||||| ${currentTime}`);
+        } else {
+          console.log(`still got lock of : ${key} |||| ${value.lockTime} ||||| ${currentTime}`)
         }
-      }      
+      }
     });
-  
+
   }
-  
-  function updateLock(index) {
-    let paragraphObject = paragraphs.get(index);
-    paragraphObject.lockTime = Date.now();
-    paragraphs.set(index, paragraphObject);
+
+  function updateLock(index, owner) {
+    let targetPara = paragraphs.get(index);
+    targetPara.owner = owner;
+    targetPara.lock = true;
+    targetPara.lockTime = Date.now();
+    paragraphs.set(index, targetPara);
   }
 };
-
