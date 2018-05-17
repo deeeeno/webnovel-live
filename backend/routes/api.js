@@ -52,8 +52,17 @@ router.post("/docsnapshot", function(req, res, next) {
   });
 });
 
+router.get("/documents", function(req, res, next) {
+  documentController.findAllDocuments().then((documents)=> {
+    res.json(documents);
+  }).catch((err) => {
+    //need error handling
+    debug(`error in GET ${req.originalUrl}`);
+  });
+});
+
 router.get("/document/name/:dName", function(req, res, next) {
-  documentController.findDocumentWithName(req.params.dName).then((snapshot, err)=> {
+  documentController.findDocumentWithName(req.params.dName).then((snapshot)=> {
     res.json(snapshot);
   }).catch((err) => {
     //need error handling
@@ -62,6 +71,7 @@ router.get("/document/name/:dName", function(req, res, next) {
 });
 
 router.post("/document", function(req, res, next) {
+  console.log(req.body);
   documentController.createDocument(req.body.name).then((paragraph)=> {
     res.json(paragraph);
   }).catch((err) => {

@@ -1,6 +1,15 @@
 <template>
   <div class="documents">
-    <div>{{mess}}</div>
+    <!--<div>{{allDocuments}}</div>-->
+    <!--<div>{{newDocumentName}}</div>-->
+    <div v-for="doc in allDocuments" :key="doc.name">
+      {{doc.name}}
+    </div>
+    <div id="newDocument">
+      <input v-model="newDocumentName" placeholder="new document name">
+      <button @click="createDocument">create</button>
+    </div>
+    <button @click="getAllDocuments">refresh</button>
       <!--<div v-for="doc in allDocuments" :key="doc.id">
         <textarea v-bind:id='paragraph.index' @click="IamUsing" @keyup="editEnd" v-model="paragraph.content"></textarea>
         <button v-bind:id='paragraph.index' @click="editEnd">exit</button>
@@ -13,21 +22,31 @@
 export default {
   name: 'Documents',
   created() {
-    this.$http.get('http://localhost:3000/api/docsnapshot/09fd9bc0031c5c089389aa15bd3adfca6b259c82').then((response) => {
-      this.mess = response;
-    }).catch((msg)=> {
-      this.mess = msg;
-    })
+    this.getAllDocuments();
   },data: function() {
     return {
-      mess: "dd",
+      allDocuments: "nothing yet",
+      newDocumentName: null,
     }
   },
   computed: {
     
   },
   methods: {
+    getAllDocuments: function() {
+      this.$http.get('http://localhost:3000/api/documents').then((response) => {
+      this.allDocuments = response.body;
+    }).catch((msg)=> {
+      this.allDocuments = msg;
+    });
+    },
+    createDocument: function() {
+      this.$http.post('http://localhost:3000/api/document',{name: this.newDocumentName}).then((response)=> {
+        this.getAllDocuments();
+      }).catch((msg) => {
 
+      });
+    }
   },
 }
 </script>
