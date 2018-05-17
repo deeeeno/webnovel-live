@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const DocSnapshotSchema = new Schema({
   hash: String,
   tag: String,
-  paragraphs: [String],
+  paragraphs: Map,
 }, { timestamps: true });
 // timestamps add createdAt and updatedAt
 

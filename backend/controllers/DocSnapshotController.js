@@ -5,12 +5,14 @@ const hasher = require("../util/hasher");
 //paragraph data should be an array of paragraph.hash
 exports.saveDocSnapshot = (paragraphs) => {
   return new Promise((resolve, reject) => {
-    const hash = hasher.hashSha(paragraphs);
+    const hash = hasher.hashShaOfParaMap(paragraphs);
+    console.log(paragraphs);
     const freshDocSnapshot = new DocSnapshot({
       hash,
       paragraphs,
     });
     freshDocSnapshot.save().then((snapshot) => {
+      console.log(snapshot);
       resolve(snapshot);
     }).catch((err) => {
       debug(err);

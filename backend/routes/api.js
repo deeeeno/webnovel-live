@@ -39,8 +39,13 @@ router.get("/docsnapshot/:snapHash", function(req, res, next) {
 });
 
 router.post("/docsnapshot", function(req, res, next) {
-  docSnapshotController.saveDocSnapshot(req.body.paragraphs).then((paragraph)=> {
-    res.json(paragraph);
+  const paragraphMap = new Map();
+  const inputData = req.body.paragraphMap;
+  for(let i = 0; i < inputData.length; i++) {
+    paragraphMap.set(inputData[i].index,inputData[i].paraHash);
+  }
+  docSnapshotController.saveDocSnapshot(paragraphMap).then((snapshot)=> {
+    res.json(snapshot);
   }).catch((err) => {
     //need error handling
     debug(`error in GET ${req.originalUrl}`);

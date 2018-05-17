@@ -11,7 +11,6 @@ module.exports = function (socket) {
     //data.index;
     //data.content;
 
-
   });
 
   socket.on("paragraphDelete", (data) => {
