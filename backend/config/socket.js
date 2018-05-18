@@ -114,9 +114,9 @@ module.exports = function (server) {
       //data.index;
       let targetPara = paragraphs.get(data.id);
       if ((canEdit(targetPara, data.owner))) {
-        if(paragraphs.size!=1) paragraphs.delete(data.id);
-        else{
-          paragraphs.delete(data.id);
+        paragraphs.delete(data.id); 
+        paragraphController.deleteParagraph(data.id);
+        if(paragraphs.size == 0){
           var data = {
             content: 'Hello World!',
             lock: false,
