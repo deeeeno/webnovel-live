@@ -37,3 +37,33 @@ exports.findParagraph = (hash) => {
     });
   });
 };
+
+exports.findAllParargraphs = () => {
+  return new Promise((resolve, reject) => {
+    Paragraph.find({
+    }).exec().then((paragraphs) => {
+      if(paragraphs == null) {
+        resolve({});
+      } else {
+        resolve(paragraphs);
+      }
+    }).catch((reason)=> {
+      debug(`error in paragraph find one : ${reason}`);
+      reject(reason);
+    });
+  });
+};
+
+//actually it will delete all paragraphs with corresponding index
+exports.deleteParagraph = (index) => {
+  return new Promise((resolve, reject) => {
+    Paragraph.deleteMany({
+      index
+    }).exec().then((query) => {
+      resolve("ok");
+    }).catch((reason)=> {
+      debug(`error in paragraph find one : ${reason}`);
+      reject(reason);
+    });
+  });
+}

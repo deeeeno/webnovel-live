@@ -1,4 +1,5 @@
 const debug = require("debug")("socketConfig");
+const paragraphController = require("../controllers/ParagraphController");
 
 module.exports = function (server) {
   let io = require("socket.io")(server, {
@@ -27,9 +28,19 @@ module.exports = function (server) {
     }]
   ]);
 
+  paragraphController.findAllParargraphs().then((results)=> {
+    console.log("findParagraphs");
+    console.log(results);
+    for(let i = 0; i < results.length; i++) {
+      paragraphs.set(results[i].index, {lock: false, content: results[i].content, owner: results[i].owner});
+    }
+  }).catch((err) => {
+  });
+
   setInterval(checkLockInterval, 2000);
 
   io.on("connection", function (socket) {
+
 
     debug("got a connection");
     //require('../sockets/paragraphService')(socket, initialParagraphs);
@@ -184,6 +195,7 @@ module.exports = function (server) {
     //console.log("check lock");
     let currentTime = Date.now();
     paragraphs.forEach((value, key, map) => {
+      paragraphController.saveParagraph(key, value.content, value.owner);
       if (value.lock == true) {
         if (currentTime - value.lockTime > MAX_LOCK_TIME) {
           const temp = value;
