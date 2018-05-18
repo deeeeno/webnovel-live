@@ -13,19 +13,21 @@
           <div class="row" style="font-family: Dosis, arial, sans-serif; font-size: 24px;">
             <div class="col-sm-2">{{paragraph.owner}}</div>
 
-            <div v-if="paragraph.lock" class="col-sm-10">
+            <div v-if="paragraph.lock" class="col-sm-9">
               <div class="mb-20 mb-md-10" style="background-color: lightgray; border-radius: 10px;">
                 <p style="margin: 0 20px; color: gray">{{paragraph.content}}</p>
               </div>
             </div>
 
-            <div v-else class="col-sm-10 ">
+            <div v-else class="col-sm-9 ">
               <div class="mb-20 mb-md-10">
                 <textarea @keyup="IamUsing(paragraph)" v-model="paragraph.content" class="input-md form-control" style="font-size: 24px;"></textarea>
               </div>
             </div>
 
-
+            <div class="col-sm-1">
+              <button @click="remParagraph(paragraph.id)" class="btn btn-mod btn-round" style="width: 100%; height: 100%; background-color: #55acee; font-size: 24px;">-</button>
+            </div>
 
           </div>
 
@@ -34,9 +36,9 @@
             <!--<button @click="editEnd(paragraph.id)" class="">exit</button>-->
           <div class="row">
             <div class="col-sm-2"></div>
-            <div class="col-sm-10">
+            <div class="col-sm-9">
               <div class="mb-20 mb-md-10">
-                <button @click="addParagraph(paragraph.id)" class="btn btn-mod btn-gray btn-round" style="width: 100%; opacity: 0.5;">+</button>
+                <button @click="addParagraph(paragraph.id)" class="btn btn-mod btn-gray btn-round" style="width: 100%; opacity: 0.5; font-size: 24px;">+</button>
               </div>
             </div>
 
