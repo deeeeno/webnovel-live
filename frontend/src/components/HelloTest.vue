@@ -1,14 +1,52 @@
 <template>
-    <div class="test">
-      <div>{{overall}}</div>
-      <div v-for="paragraph in overall" :key="paragraph.id">
-        <div v-if="paragraph.lock">{{paragraph.content}}</div>
-        <textarea v-else @keyup="IamUsing(paragraph)" v-model="paragraph.content"></textarea>
-        <!--<textarea @keyup="IamUsing(paragraph)" v-model="paragraph.content" :disabled="paragraph.lock"></textarea>-->
-        <button @click="editEnd(paragraph.id)">exit</button>
-        <button @click="addParagraph(paragraph.id)">+</button>
-      </div>
+  <section class="mt-30 mb-30">
+    <div class="container relative">
+
+      <h2 class="section-title font-alt mb-70 mb-sm-40">
+        DOCUMENT TITLE
+      </h2>
+
+      <!--<div>{{overall}}</div>-->
+      <!-- Row -->
+        <div v-for="paragraph in overall" :key="paragraph.id">
+
+          <div class="row" style="font-size: 24px;">
+            <div class="col-sm-2"></div>
+
+            <div v-if="paragraph.lock" class="col-sm-10">
+              <div class="mb-20 mb-md-10" style="background-color: lightgray; border-radius: 10px;">
+                <p style="margin: 0 20px; color: gray">{{paragraph.content}}</p>
+              </div>
+            </div>
+
+            <div v-else class="col-sm-10 ">
+              <div class="mb-20 mb-md-10">
+                <textarea @keyup="IamUsing(paragraph)" v-model="paragraph.content" class="input-md form-control" style="font-size: 24px;"></textarea>
+              </div>
+            </div>
+
+
+
+          </div>
+
+
+            <!--<textarea @keyup="IamUsing(paragraph)" v-model="paragraph.content" :disabled="paragraph.lock"></textarea>-->
+            <!--<button @click="editEnd(paragraph.id)" class="">exit</button>-->
+          <div class="row">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-10">
+              <div class="mb-20 mb-md-10">
+                <button @click="addParagraph(paragraph.id)" class="btn btn-mod btn-gray btn-round" style="width: 100%; opacity: 0.5;">+</button>
+              </div>
+            </div>
+
+
+          </div>
+
+        </div>
+
     </div>
+  </section>
 </template>
 
 <script>
@@ -52,23 +90,23 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-textarea {
-  width: 1000px;
-  height: 100px;
-}
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-</style>
+<!--<style scoped>-->
+<!--textarea {-->
+  <!--width: 1000px;-->
+  <!--height: 100px;-->
+<!--}-->
+<!--h3 {-->
+  <!--margin: 40px 0 0;-->
+<!--}-->
+<!--ul {-->
+  <!--list-style-type: none;-->
+  <!--padding: 0;-->
+<!--}-->
+<!--li {-->
+  <!--display: inline-block;-->
+  <!--margin: 0 10px;-->
+<!--}-->
+<!--a {-->
+  <!--color: #42b983;-->
+<!--}-->
+<!--</style>-->
