@@ -2,10 +2,19 @@
     <div class="test">
       <div>{{overall}}</div>
       <div v-for="paragraph in overall" :key="paragraph.id">
-        <div v-if="paragraph.lock">{{paragraph.content}}</div>
-        <textarea v-else @keyup="IamUsing(paragraph)" v-model="paragraph.content"></textarea>
-        <!--<textarea @keyup="IamUsing(paragraph)" v-model="paragraph.content" :disabled="paragraph.lock"></textarea>-->
-        <button @click="editEnd(paragraph.id)">exit</button>
+        
+        <div>
+          <div>{{paragraph.owner}}</div>
+          <div  v-if="paragraph.id == currentParagraph">
+            <textarea @keyup="IamUsing(paragraph)" v-model="paragraph.content" @focusout="editEnd(paragraph.id)"></textarea>
+          </div>
+          <div v-else>
+            <div class="locked" v-if="paragraph.lock">{{paragraph.content}}</div>
+            <div v-if="!paragraph.lock" @click="selectParagraph(paragraph)">{{paragraph.content}}</div>
+          </div>
+          <!--<textarea @keyup="IamUsing(paragraph)" v-model="paragraph.content" :disabled="paragraph.lock"></textarea>-->
+          <button @click="editEnd(paragraph.id)">exit</button>
+        </div>
         <button @click="addParagraph(paragraph.id)">+</button>
       </div>
     </div>
@@ -16,7 +25,8 @@ export default {
   name: 'Document',
   data: function() {
     return {
-      owner: null
+      owner: null,
+      currentParagraph: null,
     }
   },
   created() {
@@ -34,6 +44,7 @@ export default {
     },
     editEnd: function(index, event){
       this.$store.commit('editDone', { id : index });
+      this.currentParagraph = null;
     },
     addParagraph: function(index, event){
       this.$store.commit('addParagraph', { id : index });
@@ -46,7 +57,13 @@ export default {
         text += letters.charAt(Math.floor(Math.random() * letters.length));
       }
       return text;
+    },
+    selectParagraph: function(paragraph) {
+      console.log("click para");
+      this.IamUsing(paragraph);
+      this.currentParagraph = paragraph.id;
     }
+
   },
 }
 </script>
@@ -70,5 +87,8 @@ li {
 }
 a {
   color: #42b983;
+}
+.locked {
+  background-color :#ff00ff;
 }
 </style>

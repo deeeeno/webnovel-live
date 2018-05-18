@@ -56,7 +56,7 @@ module.exports = function (server) {
       if (canEdit(targetPara, data.owner)) {
         console.log("updatedParagraph");
         targetPara.content = data.content;
-        updateLock(data.id, data.owner);
+        updateLock(data.id, data.owner, data.lock);
         paragraphs.set(data.id, targetPara);
       }
       console.log(paragraphs);
@@ -165,16 +165,13 @@ module.exports = function (server) {
       }
     }
 
-
-
-
-    function updateLock(index, owner) {
+    function updateLock(index, owner, lock) {
       let targetPara = paragraphs.get(index);
       targetPara.owner = owner;
-      targetPara.lock = true;
+      targetPara.lock = lock;
       targetPara.lockTime = Date.now();
       paragraphs.set(index, targetPara);
-      socket.broadcast.emit("lockParagraph", index);
+      socket.broadcast.emit("lockParagraph", {index:index, lock:lock});
     }
 
   });

@@ -20,9 +20,8 @@ export default function createSocketPlugin (socket) {
     store.commit("createIntialParagraphs", data);
   })
 
-  socket.on("lockParagraph",(id) => {
-    console.log(id);
-    store.commit("setNewLock", id);
+  socket.on("lockParagraph",(data) => {
+    store.commit("setNewLock", {id : data.index, lock: data.lock});
   })
   
 }

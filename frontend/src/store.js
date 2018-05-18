@@ -46,12 +46,12 @@ export default new Vuex.Store({
       var index = state.overall.findIndex(obj => obj.id==payload.id);
       //state.overall[index].lock = true;
       state.overall[index].owner = payload.owner;
-      socket.emit("paragraphUpdate", { id : payload.id, content: state.overall[index].content, owner: state.overall[index].owner });
+      socket.emit("paragraphUpdate", { id : payload.id, content: state.overall[index].content, owner: state.overall[index].owner, lock:true });
     },
     editDone: function (state, payload) {
       var index = state.overall.findIndex(obj => obj.id==payload.id);
       state.overall[index].lock = false;
-      socket.emit("paragraphUpdate", { id : payload.id, content: state.overall[index].content, owner: state.overall[index].owner });
+      socket.emit("paragraphUpdate", { id : payload.id, content: state.overall[index].content, owner: state.overall[index].owner, lock:false });
     },
     addParagraph: function(state, payload) {
       var Index = state.overall.findIndex(obj => obj.id==payload.id);
@@ -67,8 +67,8 @@ export default new Vuex.Store({
       state.overall[index].content = payload.content;
     },
     setNewLock: function(state, payload){
-      var index = state.overall.findIndex(obj => obj.id==payload);
-      state.overall[index].lock = true;
+      var index = state.overall.findIndex(obj => obj.id==payload.id);
+      state.overall[index].lock = payload.lock;
     },
     setNewPara: function(state, payload){
       var threshold = 0;
