@@ -10,7 +10,7 @@
       <!-- Row -->
         <div v-for="paragraph in overall" :key="paragraph.id">
 
-          <div class="row" style="font-size: 24px;">
+          <div class="row" style="font-family: Dosis, arial, sans-serif; font-size: 24px;">
             <div class="col-sm-2">{{paragraph.owner}}</div>
 
             <div v-if="paragraph.lock" class="col-sm-10">
