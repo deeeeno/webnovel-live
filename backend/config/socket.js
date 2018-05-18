@@ -79,17 +79,6 @@ module.exports = function (server) {
       // socket.emit
     });
 
-    socket.on("paragraphDelete", (data) => {
-
-      //data.index;
-      let targetPara = paragraphs.get(data.index);
-      if (canEdit(targetPara, data.owner)) {
-        paragraphs.delete(data.index);
-      }
-      console.log(paragraphs);
-
-    });
-
     socket.on("sendLock", (data) => {
       console.log(data.id + " is using");
 
@@ -119,6 +108,27 @@ module.exports = function (server) {
       console.log(paragraphs);
       socket.emit("plzSetNewPara", index);
       socket.broadcast.emit("plzSetNewPara", index);
+    });
+    socket.on("paragraphDelete", (data) => {
+
+      //data.index;
+      let targetPara = paragraphs.get(data.id);
+      if ((canEdit(targetPara, data.owner))) {
+        if(paragraphs.size!=1) paragraphs.delete(data.id);
+        else{
+          paragraphs.delete(data.id);
+          var data = {
+            content: 'Hello World!',
+            lock: false,
+            owner: ''
+          };
+          paragraphs.set(1,data); //reset
+        }
+      }
+      console.log(paragraphs);
+      socket.emit("plzDeletePara", data.id);
+      socket.broadcast.emit("plzDeletePara", data.id);
+
     });
 
     function findPrevParaIndex(nextParaIndex) {
