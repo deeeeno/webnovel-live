@@ -63,6 +63,10 @@ export default new Vuex.Store({
       if((Index+1) < state.overall.length) target = (state.overall[Index+1].id)*1;
       socket.emit("paragraphAdd",target);
     },
+    remParagraph: function(state, payload) {
+      var Index = state.overall.findIndex(obj => obj.id==payload.id);
+      socket.emit("paragraphDelete",{ id : payload.id, owner : payload.owner });
+    },
 
     setNewStory: function(state, payload){
       console.log("get target : ", payload.target);
@@ -89,6 +93,20 @@ export default new Vuex.Store({
       }
       state.overall.splice(threshold+1,0,data);
       console.log("threshold : " + threshold);
+    },
+    deletePara: function(state,payload){
+      var index = state.overall.findIndex(obj => obj.id==payload);
+      state.overall.splice(index,1);
+      if(state.overall.length==0)
+      {
+        var data = {
+          id : 1,
+          content: "Hello World!",
+          lock: false,
+          owner: ''
+        }
+        state.overall.splice(0,0,data);
+      }
     },
     releaseFromServer: function(state, payload) {
       console.log("releaseFromServer");

@@ -1,7 +1,5 @@
 module.exports = function (socket, paragraphs) {
 
-  
-
   const MIN_INDEX = -99999;
 
 
@@ -46,7 +44,7 @@ module.exports = function (socket, paragraphs) {
 
   socket.on("sendLock",(data) =>{
     console.log(data.id + " is using");
-    
+
     socket.broadcast.emit("plzSetLock", { targetLock : data.id });
   });
   socket.on("sendContent",(data) =>{
@@ -126,7 +124,7 @@ module.exports = function (socket, paragraphs) {
 
   const MAX_LOCK_TIME = 50000;
 
-  
+
 
   function updateLock(index, owner) {
     let targetPara = paragraphs.get(index);

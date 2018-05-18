@@ -2,7 +2,6 @@
     <div class="test">
       <div>{{overall}}</div>
       <div v-for="paragraph in overall" :key="paragraph.id">
-        
         <div>
           <div>{{paragraph.owner}}</div>
           <div  v-if="paragraph.id == currentParagraph">
@@ -16,6 +15,7 @@
           <button @click="editEnd(paragraph.id)">exit</button>
         </div>
         <button @click="addParagraph(paragraph.id)">+</button>
+        <button @click="remParagraph(paragraph.id)">-</button>
       </div>
     </div>
 </template>
@@ -50,6 +50,9 @@ export default {
     },
     addParagraph: function(index, event){
       this.$store.commit('addParagraph', { id : index });
+    },
+    remParagraph: function(index, event){
+      this.$store.commit('remParagraph', { id : index });
     },
     makeOwner: function(){
       let text = '';

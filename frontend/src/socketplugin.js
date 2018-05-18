@@ -16,6 +16,10 @@ export default function createSocketPlugin (socket) {
     console.log("new id : " +data);
     store.commit("setNewPara", data);
   });
+  socket.on("plzDeletePara",(data) =>{
+    console.log("delete id : " +data);
+    store.commit("deletePara", data);
+  });
   socket.on("intialDocument",(data) => {
     store.commit("createIntialParagraphs", data);
   })
