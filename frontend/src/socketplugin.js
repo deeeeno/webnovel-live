@@ -6,7 +6,7 @@ export default function createSocketPlugin (socket) {
   socket.on("plzSetContent", (data) => {
     console.log("target : " + data.target);
     console.log("story  : " + data.content);
-    store.commit("setNewStory", { target : data.target, content : data.content });
+    store.commit("setNewStory", { target : data.target, content : data.content, owner: data.owner });
   });
   socket.on("plzSetLock", (data) => {
     console.log("target to lock : " + data.targetLock);

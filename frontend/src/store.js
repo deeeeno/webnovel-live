@@ -72,6 +72,7 @@ export default new Vuex.Store({
       console.log("get target : ", payload.target);
       console.log("get content : ", payload.content);
       var index = state.overall.findIndex(obj => obj.id==payload.target);
+      state.overall[index].owner = payload.owner;
       state.overall[index].content = payload.content;
     },
     setNewLock: function(state, payload){

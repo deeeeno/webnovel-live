@@ -72,6 +72,7 @@ module.exports = function (server) {
       }
       console.log(paragraphs);
       socket.broadcast.emit("plzSetContent", {
+        owner: data.owner,
         target: data.id,
         content: data.content
       });
