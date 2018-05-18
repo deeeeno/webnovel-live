@@ -26,7 +26,6 @@ export default {
   data: function() {
     return {
       owner: null,
-      currentParagraph: null,
     }
   },
   created() {
@@ -36,6 +35,9 @@ export default {
   computed: { //get variables
     overall() {
       return this.$store.getters.getOverall;
+    },
+    currentParagraph() {
+      return this.$store.getters.getCurrentParagraph;
     }
   },
   methods: {
@@ -44,7 +46,7 @@ export default {
     },
     editEnd: function(index, event){
       this.$store.commit('editDone', { id : index });
-      this.currentParagraph = null;
+      this.$store.commit("setCurrentParagraph", null);
     },
     addParagraph: function(index, event){
       this.$store.commit('addParagraph', { id : index });
@@ -61,7 +63,7 @@ export default {
     selectParagraph: function(paragraph) {
       console.log("click para");
       this.IamUsing(paragraph);
-      this.currentParagraph = paragraph.id;
+      this.$store.commit("setCurrentParagraph", paragraph.id);
     }
 
   },

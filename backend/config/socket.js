@@ -191,6 +191,7 @@ module.exports = function (server) {
           temp.lockTime = null;
           paragraphs.set(key, temp);
           console.log(`release lock of : ${key} |||| ${value.lockTime} ||||| ${currentTime}`);
+          io.emit("serverReleaseLock",({id:key, owner:temp.owner}));
         } else {
           console.log(`still got lock of : ${key} |||| ${value.lockTime} ||||| ${currentTime}`)
         }

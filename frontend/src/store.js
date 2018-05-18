@@ -11,12 +11,16 @@ const plugin = createSocketPlugin(socket);
 export default new Vuex.Store({
   state: {
     //내가 사용할 정보에 대한 state
-    overall: [] // id, context, lock
+    overall: [], // id, context, lock
+    currentParagraph: null,
   },
   ///getters
   getters: {
     getOverall: function(state) {
       return state.overall;
+    },
+    getCurrentParagraph: function(state) {
+      return state.currentParagraph;
     }
   },
   //setters sync
@@ -85,6 +89,18 @@ export default new Vuex.Store({
       }
       state.overall.splice(threshold+1,0,data);
       console.log("threshold : " + threshold);
+    },
+    releaseFromServer: function(state, payload) {
+      console.log("releaseFromServer");
+      var index = state.overall.findIndex(obj => obj.id==payload.id);
+      state.overall[index].lock = false;
+      if(state.overall[index].owner == payload.owner) {
+        console.log("change paragraph");
+        state.currentParagraph = null;
+      }
+    },
+    setCurrentParagraph: function(state, id) {
+      state.currentParagraph = id;
     }
   },
   //setters asyns

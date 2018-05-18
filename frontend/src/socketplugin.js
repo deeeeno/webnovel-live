@@ -22,7 +22,11 @@ export default function createSocketPlugin (socket) {
 
   socket.on("lockParagraph",(data) => {
     store.commit("setNewLock", {id : data.index, lock: data.lock});
-  })
+  });
+
+  socket.on("serverReleaseLock", (data) => {
+    store.commit("releaseFromServer", {id: data.id, owner: data.owner});
+  });
   
 }
 }
